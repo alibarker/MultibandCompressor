@@ -174,6 +174,8 @@ void Multiband_compressorAudioProcessor::processBlock (AudioSampleBuffer& buffer
         buffer.addFrom(ch, 0, highOutput, ch, 0, numSamples, 1.0/3.0);
     }
     
+    buffer.applyGain(pOverallGain);
+    
     
 }
 
