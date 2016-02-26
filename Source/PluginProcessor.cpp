@@ -157,17 +157,21 @@ void Multiband_compressorAudioProcessor::processBlock (AudioSampleBuffer& buffer
 
     }
     
+    lowComp->setParameters(pLowRatio, pLowThreshold, pLowAttack, pLowRelease, pLowGain);
+    midComp->setParameters(pMidRatio, pMidThreshold, pMidAttack, pMidRelease, pMidGain);
+    highComp->setParameters(pHighRatio, pHighThreshold, pHighAttack, pHighRelease, pHighGain);
+
    
-    lowComp->processSamples(lowOutput);
+    lowComp->processSamples(lowOutput);    
     midComp->processSamples(midOutput);
     highComp->processSamples(highOutput);
    
     
     for (int ch = 0; ch < numInputChannels; ch++) {
-        buffer.copyFrom(ch, 0, midOutput, ch, 0, numSamples);
+        buffer.copyFrom(ch, 0, lowOutput, ch, 0, numSamples);
         buffer.applyGain(1.0/3.0);
-//        buffer.addFrom(ch, 0, midOutput, ch, 0, numSamples, 1.0/3.0);
-//        buffer.addFrom(ch, 0, highOutput, ch, 0, numSamples, 1.0/3.0);
+        buffer.addFrom(ch, 0, midOutput, ch, 0, numSamples, 1.0/3.0);
+        buffer.addFrom(ch, 0, highOutput, ch, 0, numSamples, 1.0/3.0);
     }
     
     

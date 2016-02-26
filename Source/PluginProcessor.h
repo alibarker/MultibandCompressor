@@ -33,15 +33,15 @@ public:
     {
         int bufferSize = buffer.getNumSamples();
         int numChannels = buffer.getNumChannels();
-        AudioSampleBuffer inputBuffer;
-        
         int M = round(numChannels/2);
         
+        AudioSampleBuffer inputBuffer(M, bufferSize);
+        inputBuffer.clear();
+
         for (int m = 0 ; m < M ; ++m) //For each channel
         {
             if ( (threshold< 0) )
             {
-                inputBuffer.clear(m,0,bufferSize);
                 // Mix down left-right to analyse the input
                 inputBuffer.addFrom(m,0,buffer,m*2,0,bufferSize,0.5);
                 inputBuffer.addFrom(m,0,buffer,m*2+1,0,bufferSize,0.5);
@@ -66,13 +66,9 @@ public:
                     //find control
                     c = pow(10,(makeUpGain - y_l)/20);
                     yL_prev=y_l;
-                    
-                    // apply control voltage to the audio signal
-                    for (int i = 0 ; i < bufferSize ; ++i)
-                    {
-                        buffer.getWritePointer(2*m+0)[i] *= c;
-                        buffer.getWritePointer(2*m+1)[i] *= c;
-                    }
+                   
+                    buffer.getWritePointer(2*m+0)[i] *= c;
+                    buffer.getWritePointer(2*m+1)[i] *= c;
                 }
             }
         }
@@ -83,9 +79,9 @@ public:
     {
         ratio = ra;
         threshold = t;
-        attack = a;
-        release = re;
-        makeUpGain = m;
+        tauAttack = a;
+        tauRelease = re;
+        makeUpGain = Decibels::gainToDecibels(m);
         
     }
     
@@ -93,8 +89,8 @@ private:
     
     float ratio;
     float threshold;
-    float attack;
-    float release;
+    float tauAttack;
+    float tauRelease;
     float makeUpGain;
     
     float yL_prev;
@@ -106,7 +102,6 @@ private:
     float samplerate;
     
     float alphaAttack, alphaRelease;
-    float tauAttack, tauRelease;
     
     float x_g, y_g, x_l, y_l, c;
 };
