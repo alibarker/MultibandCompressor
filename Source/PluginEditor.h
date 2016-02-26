@@ -36,7 +36,8 @@
 */
 class Multiband_compressorAudioProcessorEditor  : public AudioProcessorEditor,
                                                   public Timer,
-                                                  public SliderListener
+                                                  public SliderListener,
+                                                  public ButtonListener
 {
 public:
     //==============================================================================
@@ -51,6 +52,7 @@ public:
     void paint (Graphics& g);
     void resized();
     void sliderValueChanged (Slider* sliderThatWasMoved);
+    void buttonClicked (Button* buttonThatWasClicked);
 
 
 
@@ -82,13 +84,13 @@ private:
     ScopedPointer<Label> attackLabel;
     ScopedPointer<Label> releaseLabel;
     ScopedPointer<Label> gainLabel;
-    ScopedPointer<Label> lowLabel;
-    ScopedPointer<Label> midLabel;
-    ScopedPointer<Label> highLabel;
     ScopedPointer<Slider> sliderKneeWidth;
     ScopedPointer<Slider> sliderOverallGain;
     ScopedPointer<Label> kneeWidthLabel;
     ScopedPointer<Label> overallGainLabel;
+    ScopedPointer<TextButton> buttonLowONOFF;
+    ScopedPointer<TextButton> buttonMidONOFF;
+    ScopedPointer<TextButton> buttonHighONOFF;
 
 
     //==============================================================================

@@ -156,30 +156,6 @@ Multiband_compressorAudioProcessorEditor::Multiband_compressorAudioProcessorEdit
     gainLabel->setColour (TextEditor::textColourId, Colours::black);
     gainLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (lowLabel = new Label ("new label",
-                                             TRANS("Low")));
-    lowLabel->setFont (Font (15.00f, Font::plain));
-    lowLabel->setJustificationType (Justification::centredLeft);
-    lowLabel->setEditable (false, false, false);
-    lowLabel->setColour (TextEditor::textColourId, Colours::black);
-    lowLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
-    addAndMakeVisible (midLabel = new Label ("new label",
-                                             TRANS("Mid")));
-    midLabel->setFont (Font (15.00f, Font::plain));
-    midLabel->setJustificationType (Justification::centredLeft);
-    midLabel->setEditable (false, false, false);
-    midLabel->setColour (TextEditor::textColourId, Colours::black);
-    midLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
-    addAndMakeVisible (highLabel = new Label ("new label",
-                                              TRANS("High")));
-    highLabel->setFont (Font (15.00f, Font::plain));
-    highLabel->setJustificationType (Justification::centredLeft);
-    highLabel->setEditable (false, false, false);
-    highLabel->setColour (TextEditor::textColourId, Colours::black);
-    highLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
     addAndMakeVisible (sliderKneeWidth = new Slider ("new slider"));
     sliderKneeWidth->setRange (0, 10, 0);
     sliderKneeWidth->setSliderStyle (Slider::Rotary);
@@ -208,6 +184,21 @@ Multiband_compressorAudioProcessorEditor::Multiband_compressorAudioProcessorEdit
     overallGainLabel->setColour (TextEditor::textColourId, Colours::black);
     overallGainLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
+    addAndMakeVisible (buttonLowONOFF = new TextButton ("new button"));
+    buttonLowONOFF->setButtonText (TRANS("Low"));
+    buttonLowONOFF->addListener (this);
+    buttonLowONOFF->setClickingTogglesState(true);
+
+    addAndMakeVisible (buttonMidONOFF = new TextButton ("new button"));
+    buttonMidONOFF->setButtonText (TRANS("Mid"));
+    buttonMidONOFF->addListener (this);
+    buttonMidONOFF->setClickingTogglesState(true);
+
+    addAndMakeVisible (buttonHighONOFF = new TextButton ("new button"));
+    buttonHighONOFF->setButtonText (TRANS("High"));
+    buttonHighONOFF->addListener (this);
+    buttonHighONOFF->setClickingTogglesState(true);
+    
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -245,13 +236,13 @@ Multiband_compressorAudioProcessorEditor::~Multiband_compressorAudioProcessorEdi
     attackLabel = nullptr;
     releaseLabel = nullptr;
     gainLabel = nullptr;
-    lowLabel = nullptr;
-    midLabel = nullptr;
-    highLabel = nullptr;
     sliderKneeWidth = nullptr;
     sliderOverallGain = nullptr;
     kneeWidthLabel = nullptr;
     overallGainLabel = nullptr;
+    buttonLowONOFF = nullptr;
+    buttonMidONOFF = nullptr;
+    buttonHighONOFF = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -294,13 +285,13 @@ void Multiband_compressorAudioProcessorEditor::resized()
     attackLabel->setBounds (16, 292, 64, 24);
     releaseLabel->setBounds (16, 326, 72, 24);
     gainLabel->setBounds (16, 360, 48, 24);
-    lowLabel->setBounds (104, 69, 40, 24);
-    midLabel->setBounds (220, 69, 40, 24);
-    highLabel->setBounds (328, 69, 40, 24);
     sliderKneeWidth->setBounds (496, 272, 56, 56);
     sliderOverallGain->setBounds (496, 336, 56, 56);
     kneeWidthLabel->setBounds (400, 280, 88, 24);
     overallGainLabel->setBounds (400, 352, 88, 24);
+    buttonLowONOFF->setBounds (98, 65, 50, 24);
+    buttonMidONOFF->setBounds (211, 65, 50, 24);
+    buttonHighONOFF->setBounds (322, 65, 50, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -417,6 +408,36 @@ void Multiband_compressorAudioProcessorEditor::sliderValueChanged (Slider* slide
     //[/UsersliderValueChanged_Post]
 }
 
+void Multiband_compressorAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == buttonLowONOFF)
+    {
+        //[UserButtonCode_buttonLowONOFF] -- add your button handler code here..
+        getProcessor()->setLowONOFF(buttonLowONOFF->getToggleState());
+        //[/UserButtonCode_buttonLowONOFF]
+    }
+    else if (buttonThatWasClicked == buttonMidONOFF)
+    {
+        //[UserButtonCode_buttonMidONOFF] -- add your button handler code here..
+        getProcessor()->setMidONOFF(buttonMidONOFF->getToggleState());
+
+        //[/UserButtonCode_buttonMidONOFF]
+    }
+    else if (buttonThatWasClicked == buttonHighONOFF)
+    {
+        //[UserButtonCode_buttonHighONOFF] -- add your button handler code here..
+        getProcessor()->setHighONOFF(buttonHighONOFF->getToggleState());
+
+        //[/UserButtonCode_buttonHighONOFF]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -443,6 +464,12 @@ void Multiband_compressorAudioProcessorEditor::timerCallback() {
     sliderHighRatio->setValue(getProcessor()->getHighRatio());
     sliderHighAttack->setValue(getProcessor()->getHighAttack());
     sliderHighRelease->setValue(getProcessor()->getHighRelease());
+
+    buttonLowONOFF->setToggleState(getProcessor()->getLowONOFF(), dontSendNotification);
+    buttonMidONOFF->setToggleState(getProcessor()->getMidONOFF(), dontSendNotification);
+    buttonHighONOFF->setToggleState(getProcessor()->getHighONOFF(), dontSendNotification);
+
+
 
 
 }
@@ -545,21 +572,6 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="Gain:" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="33"/>
-  <LABEL name="new label" id="663b27bfcd1641ff" memberName="lowLabel"
-         virtualName="" explicitFocusOrder="0" pos="104 69 40 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="Low" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
-  <LABEL name="new label" id="43f16373646d8e8a" memberName="midLabel"
-         virtualName="" explicitFocusOrder="0" pos="220 69 40 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="Mid" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
-  <LABEL name="new label" id="1a46764de2878443" memberName="highLabel"
-         virtualName="" explicitFocusOrder="0" pos="328 69 40 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="High" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
   <SLIDER name="new slider" id="e93146ed83e200ff" memberName="sliderKneeWidth"
           virtualName="" explicitFocusOrder="0" pos="496 272 56 56" min="0"
           max="10" int="0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
@@ -578,6 +590,15 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="Overall Gain:" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
+  <TEXTBUTTON name="new button" id="a4c1893239c3c319" memberName="buttonLowONOFF"
+              virtualName="" explicitFocusOrder="0" pos="98 65 50 24" buttonText="Low"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="2d61f6b8246a85fa" memberName="buttonMidONOFF"
+              virtualName="" explicitFocusOrder="0" pos="211 65 50 24" buttonText="Mid"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="6dcfd02ef78ca574" memberName="buttonHighONOFF"
+              virtualName="" explicitFocusOrder="0" pos="322 65 50 24" buttonText="High"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

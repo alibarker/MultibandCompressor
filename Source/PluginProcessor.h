@@ -40,35 +40,42 @@ public:
 
         for (int m = 0 ; m < M ; ++m) //For each channel
         {
-            if ( (threshold< 0) )
+            if (compressorONOFF)
             {
-                // Mix down left-right to analyse the input
-                inputBuffer.addFrom(m,0,buffer,m*2,0,bufferSize,0.5);
-                inputBuffer.addFrom(m,0,buffer,m*2+1,0,bufferSize,0.5);
-                // compression : calculates the control voltage
-                
-                
-                alphaAttack = exp(-1/(0.001 * samplerate * tauAttack));
-                alphaRelease= exp(-1/(0.001 * samplerate * tauRelease));
-                for (int i = 0 ; i < bufferSize ; ++i)
+                if ( (threshold< 0) )
                 {
-                    //Level detection- estimate level using peak detector
-                    if (fabs(buffer.getWritePointer(m)[i]) < 0.000001) x_g =-120;
-                    else x_g =20*log10(fabs(buffer.getWritePointer(m)[i]));
+                    // Mix down left-right to analyse the input
+                    inputBuffer.addFrom(m,0,buffer,m*2,0,bufferSize,0.5);
+                    inputBuffer.addFrom(m,0,buffer,m*2+1,0,bufferSize,0.5);
+                    // compression : calculates the control voltage
                     
-                    //Gain computer- static apply input/output curve
-                    if (x_g >= threshold) y_g = threshold+ (x_g - threshold) / ratio;
-                    else y_g = x_g;
-                    x_l = x_g - y_g;
-                    //Ballistics- smoothing of the gain
-                    if (x_l>yL_prev)  y_l=alphaAttack * yL_prev+(1 - alphaAttack ) * x_l ;
-                    else				 y_l=alphaRelease* yL_prev+(1 - alphaRelease) * x_l ;
-                    //find control
-                    c = pow(10,(makeUpGain - y_l)/20);
-                    yL_prev=y_l;
-                   
-                    buffer.getWritePointer(2*m+0)[i] *= c;
-                    buffer.getWritePointer(2*m+1)[i] *= c;
+                    
+                    alphaAttack = exp(-1/(0.001 * samplerate * tauAttack));
+                    alphaRelease= exp(-1/(0.001 * samplerate * tauRelease));
+                    for (int i = 0 ; i < bufferSize ; ++i)
+                    {
+                        //Level detection- estimate level using peak detector
+                        if (fabs(buffer.getWritePointer(m)[i]) < 0.000001) x_g =-120;
+                        else x_g =20*log10(fabs(buffer.getWritePointer(m)[i]));
+                        
+                        //Gain computer- static apply input/output curve
+                        if (x_g >= threshold) y_g = threshold+ (x_g - threshold) / ratio;
+                        else y_g = x_g;
+                        x_l = x_g - y_g;
+                        //Ballistics- smoothing of the gain
+                        if (x_l>yL_prev)  y_l=alphaAttack * yL_prev+(1 - alphaAttack ) * x_l ;
+                        else				 y_l=alphaRelease* yL_prev+(1 - alphaRelease) * x_l ;
+                        //find control
+                        c = pow(10,(makeUpGain - y_l)/20);
+                        yL_prev=y_l;
+                       
+                        buffer.getWritePointer(2*m+0)[i] *= c;
+                        buffer.getWritePointer(2*m+1)[i] *= c;
+                    }
+                }
+                else
+                {
+                    buffer.applyGain(pow(10,(makeUpGain)/20));
                 }
             }
         }
@@ -95,7 +102,7 @@ private:
     
     float yL_prev;
     
-    int compressorONOFF;
+    int compressorONOFF = 1;
     AudioSampleBuffer inputBuffer;
     int M;
     
@@ -171,6 +178,10 @@ public:
         highAttack,
         highRelease,
         
+        lowONOFF,
+        midONOFF,
+        highONOFF,
+        
         kNumParameters
     };
     
@@ -195,6 +206,10 @@ public:
     void setHighAttack(float value){ pHighAttack = value; }
     void setHighRelease(float value) { pHighRelease = value; }
     
+    void setLowONOFF(int value) {pLowONOFF = value;}
+    void setMidONOFF(int value) {pMidONOFF = value;}
+    void setHighONOFF(int value) {pHighONOFF = value;}
+    
     //==============================================================================
 
     float getOverallGain() {return Decibels::gainToDecibels(pOverallGain);}
@@ -218,6 +233,10 @@ public:
     float getHighAttack() {return pHighAttack;}
     float getHighRelease() {return pHighRelease;}
     
+    int getLowONOFF(){ return pLowONOFF; }
+    int getMidONOFF(){ return pMidONOFF; }
+    int getHighONOFF(){ return pHighONOFF; }
+
     
 private:
        
@@ -235,6 +254,7 @@ private:
             pMidGain, pMidThreshold, pMidRatio, pMidAttack, pMidRelease,
             pHighGain, pHighThreshold, pHighRatio, pHighAttack, pHighRelease,
             pOverallGain, pKneeWidth;
+    int pLowONOFF, pMidONOFF, pHighONOFF;
     float loPassCutoff = 500;
     float hiPassCutoff = 2000;
 
