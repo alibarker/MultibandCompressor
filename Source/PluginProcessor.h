@@ -25,16 +25,18 @@ public:
         // Use this method as the place to do any pre-playback initialisation that you need.
         M = round(numInputChannels/2);
         samplerate = sr;
-        bufferSize = samplesPerBlock;
         // Allocate a lot of dynamic memory here
         yL_prev=0;
     }
     
     void processSamples(AudioSampleBuffer &buffer)
     {
+        int bufferSize = buffer.getNumSamples();
+        int numChannels = buffer.getNumChannels();
+        AudioSampleBuffer inputBuffer;
         
-        inputBuffer.setSize(M,bufferSize);
-        inputBuffer.clear();
+        int M = round(numChannels/2);
+        
         for (int m = 0 ; m < M ; ++m) //For each channel
         {
             if ( (threshold< 0) )
@@ -71,17 +73,21 @@ public:
                         buffer.getWritePointer(2*m+0)[i] *= c;
                         buffer.getWritePointer(2*m+1)[i] *= c;
                     }
-                    inputBuffer.clear(m,0,bufferSize);
-                    // Mix down left-right to analyse the output
-                    inputBuffer.addFrom(m,0,buffer,m*2,0,bufferSize,0.5);
-                    inputBuffer.addFrom(m,0,buffer,m*2+1,0,bufferSize,0.5);
                 }
             }
         }
     }
     
     
-    void setParameters();
+    void setParameters(float ra, float t, float a, float re, float m)
+    {
+        ratio = ra;
+        threshold = t;
+        attack = a;
+        release = re;
+        makeUpGain = m;
+        
+    }
     
 private:
     
@@ -96,7 +102,6 @@ private:
     int compressorONOFF;
     AudioSampleBuffer inputBuffer;
     int M;
-    int bufferSize;
     
     float samplerate;
     
@@ -235,8 +240,8 @@ private:
             pMidGain, pMidThreshold, pMidRatio, pMidAttack, pMidRelease,
             pHighGain, pHighThreshold, pHighRatio, pHighAttack, pHighRelease,
             pOverallGain, pKneeWidth;
-    float loPassCutoff = 1000;
-    float hiPassCutoff = 1500;
+    float loPassCutoff = 500;
+    float hiPassCutoff = 2000;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Multiband_compressorAudioProcessor)

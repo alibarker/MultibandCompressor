@@ -30,7 +30,7 @@ Multiband_compressorAudioProcessor::Multiband_compressorAudioProcessor()
     lowComp = new Compressor;
     midComp = new Compressor;
     highComp = new Compressor;
-
+    
 }
 
 Multiband_compressorAudioProcessor::~Multiband_compressorAudioProcessor()
@@ -120,7 +120,12 @@ void Multiband_compressorAudioProcessor::prepareToPlay (double sampleRate, int s
     lowComp->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumInputChannels());
     midComp->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumInputChannels());
     highComp->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumInputChannels());
-
+    
+    lowComp->setParameters(pLowRatio, pLowThreshold, pLowAttack, pLowRelease, pLowGain);
+    midComp->setParameters(pMidRatio, pMidThreshold, pMidAttack, pMidRelease, pMidGain);
+    highComp->setParameters(pHighRatio, pHighThreshold, pHighAttack, pHighRelease, pHighGain);
+    
+    
 }
 
 void Multiband_compressorAudioProcessor::releaseResources()
@@ -134,30 +139,36 @@ void Multiband_compressorAudioProcessor::processBlock (AudioSampleBuffer& buffer
     const int numInputChannels = buffer.getNumChannels();
     const int numSamples = buffer.getNumSamples();
     
-    float lowOutput[numInputChannels][numSamples];
-    float midOutput[numInputChannels][numSamples];
-    float highOutput[numInputChannels][numSamples];
+    AudioSampleBuffer lowOutput;
+    AudioSampleBuffer midOutput;
+    AudioSampleBuffer highOutput;
+    
+    lowOutput.makeCopyOf(buffer);
+    midOutput.makeCopyOf(buffer);
+    highOutput.makeCopyOf(buffer);
     
     for (int channel = 0; channel < numInputChannels; channel++) {
+   
+        lpFilters[channel]->processSamples(lowOutput.getWritePointer(channel), numSamples);
+        hpFilters[channel]->processSamples(highOutput.getWritePointer(channel), numSamples);
         
-        float* channelData = buffer.getWritePointer(channel);
-        
-        for (int n = 0; n < numSamples; n++)
-        {
-            float input = channelData[n];
-            
-            lowOutput[channel][n] = lpFilters[channel]->processSingleSampleRaw(input);
-            highOutput[channel][n] = hpFilters[channel]->processSingleSampleRaw(input);
-            midOutput[channel][n] = input - lowOutput[channel][n] - highOutput[channel][n];
-            
-        }
+        midOutput.addFrom(channel, 0, lowOutput, channel, 0, numSamples, -1.0);
+        midOutput.addFrom(channel, 0, highOutput, channel, 0, numSamples, -1.0);
+
     }
     
+   
+    lowComp->processSamples(lowOutput);
+    midComp->processSamples(midOutput);
+    highComp->processSamples(highOutput);
+   
     
-    //            //float output = lowComp->processSample(lowOutput) + midComp->processSample(midOutput) + highComp->processSample(hiOutput);
-    //            float output = lowOutput * pLowGain + midOutput * pMidGain + hiOutput * pHighGain;
-    //
-    //            channelData[n] = output;
+    for (int ch = 0; ch < numInputChannels; ch++) {
+        buffer.copyFrom(ch, 0, midOutput, ch, 0, numSamples);
+        buffer.applyGain(1.0/3.0);
+//        buffer.addFrom(ch, 0, midOutput, ch, 0, numSamples, 1.0/3.0);
+//        buffer.addFrom(ch, 0, highOutput, ch, 0, numSamples, 1.0/3.0);
+    }
     
     
 }

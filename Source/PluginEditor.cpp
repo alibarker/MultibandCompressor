@@ -216,7 +216,7 @@ Multiband_compressorAudioProcessorEditor::Multiband_compressorAudioProcessorEdit
 
 
     //[Constructor] You can add your own custom stuff here..
-    
+
     startTimer(100);
     //[/Constructor]
 }
@@ -422,7 +422,7 @@ void Multiband_compressorAudioProcessorEditor::sliderValueChanged (Slider* slide
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 
 void Multiband_compressorAudioProcessorEditor::timerCallback() {
-    
+
     sliderOverallGain->setValue( getProcessor()->getOverallGain());
     sliderKneeWidth->setValue( getProcessor()->getKneeWidth());
 
