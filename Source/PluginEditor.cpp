@@ -187,18 +187,23 @@ Multiband_compressorAudioProcessorEditor::Multiband_compressorAudioProcessorEdit
     addAndMakeVisible (buttonLowONOFF = new TextButton ("new button"));
     buttonLowONOFF->setButtonText (TRANS("Low"));
     buttonLowONOFF->addListener (this);
-    buttonLowONOFF->setClickingTogglesState(true);
 
     addAndMakeVisible (buttonMidONOFF = new TextButton ("new button"));
     buttonMidONOFF->setButtonText (TRANS("Mid"));
     buttonMidONOFF->addListener (this);
-    buttonMidONOFF->setClickingTogglesState(true);
 
     addAndMakeVisible (buttonHighONOFF = new TextButton ("new button"));
     buttonHighONOFF->setButtonText (TRANS("High"));
     buttonHighONOFF->addListener (this);
-    buttonHighONOFF->setClickingTogglesState(true);
-    
+
+    addAndMakeVisible (ratioLabel2 = new Label ("new label",
+                                                TRANS("Threshold:")));
+    ratioLabel2->setFont (Font (15.00f, Font::plain));
+    ratioLabel2->setJustificationType (Justification::centredLeft);
+    ratioLabel2->setEditable (false, false, false);
+    ratioLabel2->setColour (TextEditor::textColourId, Colours::black);
+    ratioLabel2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -243,6 +248,7 @@ Multiband_compressorAudioProcessorEditor::~Multiband_compressorAudioProcessorEdi
     buttonLowONOFF = nullptr;
     buttonMidONOFF = nullptr;
     buttonHighONOFF = nullptr;
+    ratioLabel2 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -292,6 +298,7 @@ void Multiband_compressorAudioProcessorEditor::resized()
     buttonLowONOFF->setBounds (98, 65, 50, 24);
     buttonMidONOFF->setBounds (211, 65, 50, 24);
     buttonHighONOFF->setBounds (322, 65, 50, 24);
+    ratioLabel2->setBounds (16, 160, 88, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -599,6 +606,11 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="new button" id="6dcfd02ef78ca574" memberName="buttonHighONOFF"
               virtualName="" explicitFocusOrder="0" pos="322 65 50 24" buttonText="High"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <LABEL name="new label" id="b5c5dd3cf7b4e8a4" memberName="ratioLabel2"
+         virtualName="" explicitFocusOrder="0" pos="16 160 88 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="Threshold:" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
