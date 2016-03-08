@@ -206,6 +206,11 @@ Multiband_compressorAudioProcessorEditor::Multiband_compressorAudioProcessorEdit
 
 
     //[UserPreSize]
+    
+    buttonHighONOFF->setClickingTogglesState(true);
+    buttonMidONOFF->setClickingTogglesState(true);
+    buttonLowONOFF->setClickingTogglesState(true);
+    
     //[/UserPreSize]
 
     setSize (600, 400);
