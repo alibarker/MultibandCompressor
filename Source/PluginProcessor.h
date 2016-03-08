@@ -12,6 +12,7 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "LinkwitzRiley4thOrder.h"
 
 
 class Compressor
@@ -240,8 +241,8 @@ public:
     
 private:
        
-    OwnedArray<IIRFilter> lpFilters;
-    OwnedArray<IIRFilter> hpFilters;
+    OwnedArray<LinkwitzRiley4thOrder> lpFilters;
+    OwnedArray<LinkwitzRiley4thOrder> hpFilters;
     
     ScopedPointer<Compressor> lowComp;
     ScopedPointer<Compressor> midComp;

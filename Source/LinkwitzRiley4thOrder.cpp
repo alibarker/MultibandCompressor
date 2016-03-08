@@ -54,7 +54,7 @@ void LinkwitzRiley4thOrder::setCoefficients(int filterType, float cutoff, float 
         b[3] = -4 / a0;
         b[4] = 1 / a0;
         
-        
+    
         a[1] = 2 * (1 + wca/Q + pow(wca,2))*( -2 + 2 * pow(wca,2)) / a0;
         a[2] = (2 * (1 + wca/Q + pow(wca,2)) * (1 - wca/Q + pow(wca,2)) + pow(-2 + 2 * pow(wca,2), 2)) / a0;
         a[3] = 2 * (-2 + 2 * pow(wca,2)) * (1 - wca/Q + pow(wca,2)) / a0;
@@ -84,19 +84,29 @@ void LinkwitzRiley4thOrder::setCoefficients(int filterType, float cutoff, float 
 void LinkwitzRiley4thOrder::processSamples(float *samples, int numSamples)
 {
     
-    for (int n = 0; n < numSamples; n++) {
+    for (int n = 0; n < numSamples; ++n) {
         
         float input = samples[n];
         float output = b[0] * input;
     
         for (int i = 1; i <= FILTER_ORDER; i++)
         {
-            output += (b[i] / a[0]) * x[ (writePointer - i + FILTER_ORDER) % FILTER_ORDER];
-            output -= (a[i] / a[0]) * y[ (writePointer - i + FILTER_ORDER) % FILTER_ORDER];
+            output += b[i] * x[ (writePointer - i + FILTER_ORDER) % FILTER_ORDER];
+            output -= a[i] * y[ (writePointer - i + FILTER_ORDER) % FILTER_ORDER];
             
         }
         
+        // write inputs and outputs to buffers
+        x[writePointer] = input;
+        y[writePointer] = output;
+        
+        // advance pointer and loop in pointer if necessary
         writePointer++;
+        if (writePointer == FILTER_ORDER) {
+            writePointer = 0;
+        }
+        
+        samples[n] = output;
 
     }
 

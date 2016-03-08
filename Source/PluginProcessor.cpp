@@ -113,10 +113,13 @@ void Multiband_compressorAudioProcessor::prepareToPlay (double sampleRate, int s
     //    hpFilters = (IIRFilter**)malloc(numChannels * sizeof(IIRFilter*));
     
     for (int i = 0; i < numChannels; i++) {
-        lpFilters.add(new IIRFilter);
-        lpFilters[i]->setCoefficients(low);
-        hpFilters.add(new IIRFilter);
-        hpFilters[i]->setCoefficients(high);
+        lpFilters.add(new LinkwitzRiley4thOrder);
+        lpFilters[i]->setCoefficients(filterTypeLowPass, loPassCutoff, sampleRate);
+        lpFilters[i]->reset();
+        
+        hpFilters.add(new LinkwitzRiley4thOrder);
+        hpFilters[i]->setCoefficients(filterTypeHighPass, hiPassCutoff, sampleRate);
+        hpFilters[i]->reset();
     }
     
     lowComp->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumInputChannels());
