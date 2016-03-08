@@ -116,8 +116,10 @@ public:
 private:
     
     // array of filters
-    OwnedArray<LinkwitzRiley4thOrder> lpFilters;
-    OwnedArray<LinkwitzRiley4thOrder> hpFilters;
+    OwnedArray<LinkwitzRiley4thOrder> lowpassFilters;
+    OwnedArray<LinkwitzRiley4thOrder> bandpassAFilters;
+    OwnedArray<LinkwitzRiley4thOrder> bandpassBFilters;
+    OwnedArray<LinkwitzRiley4thOrder> highpassFilters;
     
     // compressors
     ScopedPointer<Compressor> lowComp;
