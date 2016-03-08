@@ -13,6 +13,10 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.1.0">
   <MAINGROUP id="OYUvdx" name="Multiband_compressor">
     <GROUP id="{E57BA94D-6309-65D5-B340-9E6BA40C44D8}" name="Source">
+      <FILE id="hEIvYM" name="LinkwitzRiley4thOrder.cpp" compile="1" resource="0"
+            file="Source/LinkwitzRiley4thOrder.cpp"/>
+      <FILE id="uG7HY2" name="LinkwitzRiley4thOrder.h" compile="0" resource="0"
+            file="Source/LinkwitzRiley4thOrder.h"/>
       <FILE id="NHrMMv" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="k2Bzxr" name="PluginProcessor.h" compile="0" resource="0"
