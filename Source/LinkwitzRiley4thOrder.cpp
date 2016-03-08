@@ -24,14 +24,14 @@ void LinkwitzRiley4thOrder::reset()
 void LinkwitzRiley4thOrder::setCoefficients(int filterType, float cutoff, float sampleRate)
 {
     
+    // calculate values needed for coefficients
     float wc = 2 * M_PI * cutoff;
     float Q = sqrt(2) / 2;
-    
     float wca = tanf(wc/(2*sampleRate));
+    float a0 = pow(1 + wca/Q + pow(wca,2), 2);
     
-    float a0 = pow(1 + wca/Q + pow(wca,2), 2); // denominator for all coefficeints for the linkwitz filters
-
-
+    
+    // calculate coefficients
     if(filterType == filterTypeLowPass) {
         
         b[0] = pow(wca, 4) / a0;
@@ -59,22 +59,20 @@ void LinkwitzRiley4thOrder::setCoefficients(int filterType, float cutoff, float 
         a[2] = (2 * (1 + wca/Q + pow(wca,2)) * (1 - wca/Q + pow(wca,2)) + pow(-2 + 2 * pow(wca,2), 2)) / a0;
         a[3] = 2 * (-2 + 2 * pow(wca,2)) * (1 - wca/Q + pow(wca,2)) / a0;
         a[4] = pow(1 - wca/Q + pow(wca,2), 2) / a0;
-        
-        
     }
-
-return;
     
 }
 
 void LinkwitzRiley4thOrder::processSamples(float *samples, int numSamples)
 {
-    
+    // loop through samples
     for (int n = 0; n < numSamples; ++n) {
         
+        // initialise input/output
         float input = samples[n];
         float output = b[0] * input;
-    
+        
+        // apply filter
         for (int i = 1; i <= FILTER_ORDER; i++)
         {
             output += b[i] * x[ (writePointer - i + FILTER_ORDER) % FILTER_ORDER];
@@ -92,6 +90,7 @@ void LinkwitzRiley4thOrder::processSamples(float *samples, int numSamples)
             writePointer = 0;
         }
         
+        // write output to buffer
         samples[n] = output;
 
     }

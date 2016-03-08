@@ -29,6 +29,7 @@ Multiband_compressorAudioProcessor::Multiband_compressorAudioProcessor()
     pOverallGain = 1.0;
     pKneeWidth = 0.0;
     
+    // instantiate compresors
     lowComp = new Compressor;
     midComp = new Compressor;
     highComp = new Compressor;
@@ -100,18 +101,12 @@ void Multiband_compressorAudioProcessor::changeProgramName (int index, const Str
 //==============================================================================
 void Multiband_compressorAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
     
     // Create as many filters as we have input channels
     numChannels = getTotalNumInputChannels();
     
-    IIRCoefficients low =IIRCoefficients::makeLowPass(sampleRate, loPassCutoff);
-    IIRCoefficients high =IIRCoefficients::makeHighPass(sampleRate, hiPassCutoff);
     
-    //    lpFilters = (IIRFilter**)malloc(numChannels * sizeof(IIRFilter*));
-    //    hpFilters = (IIRFilter**)malloc(numChannels * sizeof(IIRFilter*));
-    
+    // for each channel add low and high filters, set coefficients and reset
     for (int i = 0; i < numChannels; i++) {
         lpFilters.add(new LinkwitzRiley4thOrder);
         lpFilters[i]->setCoefficients(filterTypeLowPass, loPassCutoff, sampleRate);
@@ -122,6 +117,7 @@ void Multiband_compressorAudioProcessor::prepareToPlay (double sampleRate, int s
         hpFilters[i]->reset();
     }
     
+    // prepare compressors
     lowComp->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumInputChannels());
     midComp->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumInputChannels());
     highComp->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumInputChannels());
@@ -144,40 +140,48 @@ void Multiband_compressorAudioProcessor::processBlock (AudioSampleBuffer& buffer
     const int numInputChannels = buffer.getNumChannels();
     const int numSamples = buffer.getNumSamples();
     
+    // initialise buffers for each band
     AudioSampleBuffer lowOutput;
     AudioSampleBuffer midOutput;
     AudioSampleBuffer highOutput;
     
+    // set each to the input
     lowOutput.makeCopyOf(buffer);
     midOutput.makeCopyOf(buffer);
     highOutput.makeCopyOf(buffer);
     
     for (int channel = 0; channel < numInputChannels; channel++) {
    
+        // apply high and low pass filters
         lpFilters[channel]->processSamples(lowOutput.getWritePointer(channel), numSamples);
         hpFilters[channel]->processSamples(highOutput.getWritePointer(channel), numSamples);
         
+        // calculate mid band from high and low filters
         midOutput.addFrom(channel, 0, lowOutput, channel, 0, numSamples, -1.0);
         midOutput.addFrom(channel, 0, highOutput, channel, 0, numSamples, -1.0);
 
     }
     
+    // set parameters for compressors
     lowComp->setParameters(pLowRatio, pLowThreshold, pLowAttack, pLowRelease, pLowGain, pKneeWidth);
     midComp->setParameters(pMidRatio, pMidThreshold, pMidAttack, pMidRelease, pMidGain, pKneeWidth);
     highComp->setParameters(pHighRatio, pHighThreshold, pHighAttack, pHighRelease, pHighGain, pKneeWidth);
 
+    // compress each band
     if (pLowONOFF)  lowComp->processSamples(lowOutput);
     if (pMidONOFF)  midComp->processSamples(midOutput);
     if (pHighONOFF) highComp->processSamples(highOutput);
    
-    buffer.clear();
     
+    // sum each band
+    buffer.clear();
     for (int ch = 0; ch < numInputChannels; ch++) {
         buffer.addFrom(ch, 0, lowOutput, ch, 0, numSamples, 1.0/3.0);
         buffer.addFrom(ch, 0, midOutput, ch, 0, numSamples, 1.0/3.0);
         buffer.addFrom(ch, 0, highOutput, ch, 0, numSamples, 1.0/3.0);
     }
     
+    // apply overall gain
     buffer.applyGain(pOverallGain);
     
     

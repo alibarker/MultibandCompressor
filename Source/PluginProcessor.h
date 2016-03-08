@@ -57,35 +57,7 @@ public:
     
     
     //==============================================================================
-    enum Parameters
-    {
-        overallGain,
-        kneeWidth,
-        
-        lowGain,
-        lowThreshold,
-        lowRatio,
-        lowAttack,
-        lowRelease,
-        
-        midGain,
-        midThreshold,
-        midRatio,
-        midAttack,
-        midRelease,
-        
-        highGain,
-        highThreshold,
-        highRatio,
-        highAttack,
-        highRelease,
-        
-        lowONOFF,
-        midONOFF,
-        highONOFF,
-        
-        kNumParameters
-    };
+    // Set methods for each parameter
     
     void setOverallGain(float value){ pOverallGain = Decibels::decibelsToGain(value); }
     void setKneeWidth(float value){ pKneeWidth = value; }
@@ -113,6 +85,7 @@ public:
     void setHighONOFF(int value) {pHighONOFF = value;}
     
     //==============================================================================
+    // get methods for each parameter
 
     float getOverallGain() {return Decibels::gainToDecibels(pOverallGain);}
     float getKneeWidth() {return pKneeWidth;}
@@ -141,22 +114,26 @@ public:
 
     
 private:
-       
+    
+    // array of filters
     OwnedArray<LinkwitzRiley4thOrder> lpFilters;
     OwnedArray<LinkwitzRiley4thOrder> hpFilters;
     
+    // compressors
     ScopedPointer<Compressor> lowComp;
     ScopedPointer<Compressor> midComp;
     ScopedPointer<Compressor> highComp;
 
-
     int numChannels;
     
+    // parameter variables
     float   pLowGain, pLowThreshold, pLowRatio, pLowAttack, pLowRelease,
             pMidGain, pMidThreshold, pMidRatio, pMidAttack, pMidRelease,
             pHighGain, pHighThreshold, pHighRatio, pHighAttack, pHighRelease,
             pOverallGain, pKneeWidth;
     int pLowONOFF, pMidONOFF, pHighONOFF;
+    
+    // cutoff values
     float loPassCutoff = 500;
     float hiPassCutoff = 2000;
 

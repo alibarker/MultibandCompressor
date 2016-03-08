@@ -27,24 +27,24 @@ public:
     
 private:
     
+    // parameters
     float ratio;
     float threshold;
     float tauAttack;
     float tauRelease;
     float makeUpGain;
     float kneeWidth;
-    
-    float yL_prev;
-    
     int compressorONOFF = 1;
-    AudioSampleBuffer inputBuffer;
-    int M;
-    
+        
     float samplerate;
-    
-    float alphaAttack, alphaRelease;
-    
-    float x_g, y_g, x_l, y_l, c;
+        
+    // input/output gains & input/output level (dB)
+    float x_g, y_g, x_l, y_l;
+    // previous output level (used for ballistics)
+    float yL_prev;
+
+    // control voltage
+    float c;
 };
 
 
