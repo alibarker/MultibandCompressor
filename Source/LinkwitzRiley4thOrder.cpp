@@ -63,21 +63,7 @@ void LinkwitzRiley4thOrder::setCoefficients(int filterType, float cutoff, float 
         
     }
 
-
-    
-//    
-//    
-//    rt_printf("Filter Coefficients:\n");
-//    
-//    for (int i = 0; i <= FILTER_ORDER; i++)
-//    {
-//        rt_printf("A(%d) = %f", i, coeffs.a[i]);
-//        rt_printf("\t B(%d) = %f \n", i, coeffs.b[i]);
-//        
-//    }
-//    
-//    
-    return;
+return;
     
 }
 
