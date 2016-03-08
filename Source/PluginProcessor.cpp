@@ -126,9 +126,9 @@ void Multiband_compressorAudioProcessor::prepareToPlay (double sampleRate, int s
     midComp->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumInputChannels());
     highComp->prepareToPlay(sampleRate, samplesPerBlock, getTotalNumInputChannels());
     
-    lowComp->setParameters(pLowRatio, pLowThreshold, pLowAttack, pLowRelease, pLowGain);
-    midComp->setParameters(pMidRatio, pMidThreshold, pMidAttack, pMidRelease, pMidGain);
-    highComp->setParameters(pHighRatio, pHighThreshold, pHighAttack, pHighRelease, pHighGain);
+    lowComp->setParameters(pLowRatio, pLowThreshold, pLowAttack, pLowRelease, pLowGain, pKneeWidth);
+    midComp->setParameters(pMidRatio, pMidThreshold, pMidAttack, pMidRelease, pMidGain, pKneeWidth);
+    highComp->setParameters(pHighRatio, pHighThreshold, pHighAttack, pHighRelease, pHighGain, pKneeWidth);
     
     
 }
@@ -162,9 +162,9 @@ void Multiband_compressorAudioProcessor::processBlock (AudioSampleBuffer& buffer
 
     }
     
-    lowComp->setParameters(pLowRatio, pLowThreshold, pLowAttack, pLowRelease, pLowGain);
-    midComp->setParameters(pMidRatio, pMidThreshold, pMidAttack, pMidRelease, pMidGain);
-    highComp->setParameters(pHighRatio, pHighThreshold, pHighAttack, pHighRelease, pHighGain);
+    lowComp->setParameters(pLowRatio, pLowThreshold, pLowAttack, pLowRelease, pLowGain, pKneeWidth);
+    midComp->setParameters(pMidRatio, pMidThreshold, pMidAttack, pMidRelease, pMidGain, pKneeWidth);
+    highComp->setParameters(pHighRatio, pHighThreshold, pHighAttack, pHighRelease, pHighGain, pKneeWidth);
 
     if (pLowONOFF)  lowComp->processSamples(lowOutput);
     if (pMidONOFF)  midComp->processSamples(midOutput);

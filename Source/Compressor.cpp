@@ -28,9 +28,8 @@ void Compressor::processSamples(AudioSampleBuffer &buffer)
                     // Mix down left-right to analyse the input
                     inputBuffer.addFrom(m,0,buffer,m*2,0,bufferSize,0.5);
                     inputBuffer.addFrom(m,0,buffer,m*2+1,0,bufferSize,0.5);
+                    
                     // compression : calculates the control voltage
-                    
-                    
                     alphaAttack = exp(-1/(0.001 * samplerate * tauAttack));
                     alphaRelease= exp(-1/(0.001 * samplerate * tauRelease));
                     for (int i = 0 ; i < bufferSize ; ++i)
@@ -40,7 +39,14 @@ void Compressor::processSamples(AudioSampleBuffer &buffer)
                         else x_g =20*log10(fabs(buffer.getWritePointer(m)[i]));
                         
                         //Gain computer- static apply input/output curve
-                        if (x_g >= threshold) y_g = threshold+ (x_g - threshold) / ratio;
+                        if (2 * (x_g-threshold) >= kneeWidth)
+                        {
+                            y_g = threshold+ (x_g - threshold) / ratio;
+                        }
+                        else if (2 * fabs(x_g - threshold) <= kneeWidth)
+                        {
+                            y_g = x_g + (1/ratio - 1) * pow(x_g - threshold + kneeWidth/2, 2)/(2 * kneeWidth);
+                        }//knee
                         else y_g = x_g;
                         x_l = x_g - y_g;
                         //Ballistics- smoothing of the gain
@@ -62,13 +68,14 @@ void Compressor::processSamples(AudioSampleBuffer &buffer)
         }
     }
     
-void Compressor::setParameters(float ra, float t, float a, float re, float m)
+void Compressor::setParameters(float ra, float t, float a, float re, float m, float kw)
 {
     ratio = ra;
     threshold = t;
     tauAttack = a;
     tauRelease = re;
     makeUpGain = Decibels::gainToDecibels(m);
+    kneeWidth = kw;
         
 }
     

@@ -23,7 +23,7 @@ public:
     
     void prepareToPlay (double sr, int samplesPerBlock, int numInputChannels);
     void processSamples(AudioSampleBuffer &buffer);
-    void setParameters(float ra, float t, float a, float re, float m);
+    void setParameters(float ra, float t, float a, float re, float m, float kw);
     
 private:
     
@@ -32,6 +32,7 @@ private:
     float tauAttack;
     float tauRelease;
     float makeUpGain;
+    float kneeWidth;
     
     float yL_prev;
     
