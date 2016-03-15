@@ -5,7 +5,7 @@
     Created: 8 Mar 2016 11:55:52am
     Author:  Alistair Barker
  
-    Based on the compressor
+    Based on the compressor example plug-in by Reiss and McPherson
 
   ==============================================================================
 */

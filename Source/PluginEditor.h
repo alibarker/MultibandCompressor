@@ -92,6 +92,8 @@ private:
     ScopedPointer<TextButton> buttonMidONOFF;
     ScopedPointer<TextButton> buttonHighONOFF;
     ScopedPointer<Label> ratioLabel2;
+    ScopedPointer<Slider> sliderLowCutoff;
+    ScopedPointer<Slider> sliderHighCutoff;
 
 
     //==============================================================================

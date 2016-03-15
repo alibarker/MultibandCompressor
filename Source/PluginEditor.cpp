@@ -59,7 +59,7 @@ Multiband_compressorAudioProcessorEditor::Multiband_compressorAudioProcessorEdit
     sliderLowRelease->addListener (this);
 
     addAndMakeVisible (sliderLowGain = new Slider ("new slider"));
-    sliderLowGain->setRange (-80, 20, 0);
+    sliderLowGain->setRange (-80, 40, 0);
     sliderLowGain->setSliderStyle (Slider::Rotary);
     sliderLowGain->setTextBoxStyle (Slider::TextBoxLeft, false, 40, 20);
     sliderLowGain->addListener (this);
@@ -89,7 +89,7 @@ Multiband_compressorAudioProcessorEditor::Multiband_compressorAudioProcessorEdit
     sliderMidRelease->addListener (this);
 
     addAndMakeVisible (sliderMidGain = new Slider ("new slider"));
-    sliderMidGain->setRange (-80, 20, 0);
+    sliderMidGain->setRange (-80, 40, 0);
     sliderMidGain->setSliderStyle (Slider::Rotary);
     sliderMidGain->setTextBoxStyle (Slider::TextBoxLeft, false, 40, 20);
     sliderMidGain->addListener (this);
@@ -119,7 +119,7 @@ Multiband_compressorAudioProcessorEditor::Multiband_compressorAudioProcessorEdit
     sliderHighRelease->addListener (this);
 
     addAndMakeVisible (sliderHighGain = new Slider ("new slider"));
-    sliderHighGain->setRange (-80, 20, 0);
+    sliderHighGain->setRange (-80, 40, 0);
     sliderHighGain->setSliderStyle (Slider::Rotary);
     sliderHighGain->setTextBoxStyle (Slider::TextBoxLeft, false, 40, 20);
     sliderHighGain->addListener (this);
@@ -204,6 +204,20 @@ Multiband_compressorAudioProcessorEditor::Multiband_compressorAudioProcessorEdit
     ratioLabel2->setColour (TextEditor::textColourId, Colours::black);
     ratioLabel2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
+    addAndMakeVisible (sliderLowCutoff = new Slider ("new slider"));
+    sliderLowCutoff->setRange (150, 600, 0);
+    sliderLowCutoff->setSliderStyle (Slider::Rotary);
+    sliderLowCutoff->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
+    sliderLowCutoff->addListener (this);
+    sliderLowCutoff->setSkewFactor (2);
+
+    addAndMakeVisible (sliderHighCutoff = new Slider ("new slider"));
+    sliderHighCutoff->setRange (1000, 4000, 0);
+    sliderHighCutoff->setSliderStyle (Slider::Rotary);
+    sliderHighCutoff->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
+    sliderHighCutoff->addListener (this);
+    sliderHighCutoff->setSkewFactor (2);
+
 
     //[UserPreSize]
 
@@ -254,6 +268,8 @@ Multiband_compressorAudioProcessorEditor::~Multiband_compressorAudioProcessorEdi
     buttonMidONOFF = nullptr;
     buttonHighONOFF = nullptr;
     ratioLabel2 = nullptr;
+    sliderLowCutoff = nullptr;
+    sliderHighCutoff = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -277,33 +293,35 @@ void Multiband_compressorAudioProcessorEditor::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    sliderLowThreshold->setBounds (104, 96, 40, 144);
+    sliderLowThreshold->setBounds (104, 128, 40, 112);
     sliderLowRatio->setBounds (88, 258, 80, 32);
     sliderLowAttack->setBounds (88, 292, 80, 32);
     sliderLowRelease->setBounds (88, 326, 80, 32);
     sliderLowGain->setBounds (88, 360, 80, 32);
-    sliderMidThreshold->setBounds (216, 96, 40, 144);
-    sliderMidRatio->setBounds (200, 258, 80, 32);
-    sliderMidAttack->setBounds (200, 292, 80, 32);
-    sliderMidRelease->setBounds (200, 326, 80, 32);
-    sliderMidGain->setBounds (200, 360, 80, 32);
-    sliderHighThreshold->setBounds (328, 96, 40, 144);
-    sliderHighRatio->setBounds (312, 258, 80, 32);
-    sliderHighAttack->setBounds (312, 292, 80, 32);
-    sliderHighRelease->setBounds (312, 326, 80, 32);
-    sliderHighGain->setBounds (312, 360, 80, 32);
+    sliderMidThreshold->setBounds (221, 128, 40, 112);
+    sliderMidRatio->setBounds (205, 258, 80, 32);
+    sliderMidAttack->setBounds (205, 292, 80, 32);
+    sliderMidRelease->setBounds (205, 326, 80, 32);
+    sliderMidGain->setBounds (205, 360, 80, 32);
+    sliderHighThreshold->setBounds (338, 128, 40, 112);
+    sliderHighRatio->setBounds (322, 258, 80, 32);
+    sliderHighAttack->setBounds (322, 292, 80, 32);
+    sliderHighRelease->setBounds (322, 326, 80, 32);
+    sliderHighGain->setBounds (322, 360, 80, 32);
     ratioLabel->setBounds (16, 258, 48, 24);
     attackLabel->setBounds (16, 292, 64, 24);
     releaseLabel->setBounds (16, 326, 72, 24);
     gainLabel->setBounds (16, 360, 48, 24);
     sliderKneeWidth->setBounds (496, 272, 56, 56);
     sliderOverallGain->setBounds (496, 336, 56, 56);
-    kneeWidthLabel->setBounds (400, 280, 88, 24);
-    overallGainLabel->setBounds (400, 352, 88, 24);
-    buttonLowONOFF->setBounds (98, 65, 50, 24);
-    buttonMidONOFF->setBounds (211, 65, 50, 24);
-    buttonHighONOFF->setBounds (322, 65, 50, 24);
+    kneeWidthLabel->setBounds (416, 280, 88, 24);
+    overallGainLabel->setBounds (411, 352, 88, 24);
+    buttonLowONOFF->setBounds (98, 98, 50, 24);
+    buttonMidONOFF->setBounds (216, 98, 50, 23);
+    buttonHighONOFF->setBounds (332, 98, 50, 24);
     ratioLabel2->setBounds (16, 160, 88, 24);
+    sliderLowCutoff->setBounds (155, 31, 56, 64);
+    sliderHighCutoff->setBounds (272, 31, 56, 64);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -406,7 +424,7 @@ void Multiband_compressorAudioProcessorEditor::sliderValueChanged (Slider* slide
     else if (sliderThatWasMoved == sliderKneeWidth)
     {
         //[UserSliderCode_sliderKneeWidth] -- add your slider handling code here..
-        getProcessor()->setKneeWidth(sliderHighGain->getValue());
+        getProcessor()->setKneeWidth(sliderKneeWidth->getValue());
         //[/UserSliderCode_sliderKneeWidth]
     }
     else if (sliderThatWasMoved == sliderOverallGain)
@@ -414,6 +432,18 @@ void Multiband_compressorAudioProcessorEditor::sliderValueChanged (Slider* slide
         //[UserSliderCode_sliderOverallGain] -- add your slider handling code here..
         getProcessor()->setOverallGain(sliderOverallGain->getValue());
         //[/UserSliderCode_sliderOverallGain]
+    }
+    else if (sliderThatWasMoved == sliderLowCutoff)
+    {
+        //[UserSliderCode_sliderLowCutoff] -- add your slider handling code here..
+        getProcessor()->setLowCutoff(sliderLowCutoff->getValue());
+        //[/UserSliderCode_sliderLowCutoff]
+    }
+    else if (sliderThatWasMoved == sliderHighCutoff)
+    {
+        //[UserSliderCode_sliderHighCutoff] -- add your slider handling code here..
+        getProcessor()->setHighCutoff(sliderHighCutoff->getValue());
+        //[/UserSliderCode_sliderHighCutoff]
     }
 
     //[UsersliderValueChanged_Post]
@@ -481,7 +511,8 @@ void Multiband_compressorAudioProcessorEditor::timerCallback() {
     buttonMidONOFF->setToggleState(getProcessor()->getMidONOFF(), dontSendNotification);
     buttonHighONOFF->setToggleState(getProcessor()->getHighONOFF(), dontSendNotification);
 
-
+    sliderLowCutoff->setValue(getProcessor()->getLowCutoff());
+    sliderHighCutoff->setValue(getProcessor()->getHighCutoff());
 
 
 }
@@ -505,7 +536,7 @@ BEGIN_JUCER_METADATA
                  initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="fffaebd7"/>
   <SLIDER name="Low Gain Slider" id="8b7c5322a4bbeb1d" memberName="sliderLowThreshold"
-          virtualName="" explicitFocusOrder="0" pos="104 96 40 144" min="-80"
+          virtualName="" explicitFocusOrder="0" pos="104 128 40 112" min="-80"
           max="0" int="0" style="LinearVertical" textBoxPos="TextBoxAbove"
           textBoxEditable="1" textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="41f3423a8399955" memberName="sliderLowRatio"
@@ -522,47 +553,47 @@ BEGIN_JUCER_METADATA
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="f966b2bcf80fa070" memberName="sliderLowGain"
           virtualName="" explicitFocusOrder="0" pos="88 360 80 32" min="-80"
-          max="20" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="1"
+          max="40" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="1"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="Mid Gain Slider" id="9af554c661b648de" memberName="sliderMidThreshold"
-          virtualName="" explicitFocusOrder="0" pos="216 96 40 144" min="-80"
+          virtualName="" explicitFocusOrder="0" pos="221 128 40 112" min="-80"
           max="0" int="0" style="LinearVertical" textBoxPos="TextBoxAbove"
           textBoxEditable="1" textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="b7f5e6c16be1b2b0" memberName="sliderMidRatio"
-          virtualName="" explicitFocusOrder="0" pos="200 258 80 32" min="1"
+          virtualName="" explicitFocusOrder="0" pos="205 258 80 32" min="1"
           max="10" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="0"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="de1f191e35c77811" memberName="sliderMidAttack"
-          virtualName="" explicitFocusOrder="0" pos="200 292 80 32" min="5"
+          virtualName="" explicitFocusOrder="0" pos="205 292 80 32" min="5"
           max="100" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="0"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="b2ae8695c1ffab01" memberName="sliderMidRelease"
-          virtualName="" explicitFocusOrder="0" pos="200 326 80 32" min="5"
+          virtualName="" explicitFocusOrder="0" pos="205 326 80 32" min="5"
           max="100" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="0"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="7b200698e28e19dd" memberName="sliderMidGain"
-          virtualName="" explicitFocusOrder="0" pos="200 360 80 32" min="-80"
-          max="20" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="1"
+          virtualName="" explicitFocusOrder="0" pos="205 360 80 32" min="-80"
+          max="40" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="1"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="High Gain Slider" id="70949a3a20587967" memberName="sliderHighThreshold"
-          virtualName="" explicitFocusOrder="0" pos="328 96 40 144" min="-80"
+          virtualName="" explicitFocusOrder="0" pos="338 128 40 112" min="-80"
           max="0" int="0" style="LinearVertical" textBoxPos="TextBoxAbove"
           textBoxEditable="1" textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="e9aa8181da8c56ba" memberName="sliderHighRatio"
-          virtualName="" explicitFocusOrder="0" pos="312 258 80 32" min="1"
+          virtualName="" explicitFocusOrder="0" pos="322 258 80 32" min="1"
           max="10" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="0"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="18ed2f302ff0bc0c" memberName="sliderHighAttack"
-          virtualName="" explicitFocusOrder="0" pos="312 292 80 32" min="5"
+          virtualName="" explicitFocusOrder="0" pos="322 292 80 32" min="5"
           max="100" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="0"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="ddc383ef00993e92" memberName="sliderHighRelease"
-          virtualName="" explicitFocusOrder="0" pos="312 326 80 32" min="5"
+          virtualName="" explicitFocusOrder="0" pos="322 326 80 32" min="5"
           max="100" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="0"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <SLIDER name="new slider" id="b49b7203d167a680" memberName="sliderHighGain"
-          virtualName="" explicitFocusOrder="0" pos="312 360 80 32" min="-80"
-          max="20" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="1"
+          virtualName="" explicitFocusOrder="0" pos="322 360 80 32" min="-80"
+          max="40" int="0" style="Rotary" textBoxPos="TextBoxLeft" textBoxEditable="1"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <LABEL name="new label" id="bc5e79ca9a3aeace" memberName="ratioLabel"
          virtualName="" explicitFocusOrder="0" pos="16 258 48 24" edTextCol="ff000000"
@@ -593,29 +624,37 @@ BEGIN_JUCER_METADATA
           max="10" int="0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="40" textBoxHeight="20" skewFactor="1"/>
   <LABEL name="new label" id="76c3569cea3488c4" memberName="kneeWidthLabel"
-         virtualName="" explicitFocusOrder="0" pos="400 280 88 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="416 280 88 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Knee Width:" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="8e872eeadbe367ee" memberName="overallGainLabel"
-         virtualName="" explicitFocusOrder="0" pos="400 352 88 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="411 352 88 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Overall Gain:" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="new button" id="a4c1893239c3c319" memberName="buttonLowONOFF"
-              virtualName="" explicitFocusOrder="0" pos="98 65 50 24" buttonText="Low"
+              virtualName="" explicitFocusOrder="0" pos="98 98 50 24" buttonText="Low"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="new button" id="2d61f6b8246a85fa" memberName="buttonMidONOFF"
-              virtualName="" explicitFocusOrder="0" pos="211 65 50 24" buttonText="Mid"
+              virtualName="" explicitFocusOrder="0" pos="216 98 50 23" buttonText="Mid"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="new button" id="6dcfd02ef78ca574" memberName="buttonHighONOFF"
-              virtualName="" explicitFocusOrder="0" pos="322 65 50 24" buttonText="High"
+              virtualName="" explicitFocusOrder="0" pos="332 98 50 24" buttonText="High"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="new label" id="b5c5dd3cf7b4e8a4" memberName="ratioLabel2"
          virtualName="" explicitFocusOrder="0" pos="16 160 88 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Threshold:" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="33"/>
+  <SLIDER name="new slider" id="46974c2ecd1baab1" memberName="sliderLowCutoff"
+          virtualName="" explicitFocusOrder="0" pos="155 31 56 64" min="150"
+          max="600" int="0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="2"/>
+  <SLIDER name="new slider" id="65bf6fe4c9cf64d6" memberName="sliderHighCutoff"
+          virtualName="" explicitFocusOrder="0" pos="272 31 56 64" min="1000"
+          max="4000" int="0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="2"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

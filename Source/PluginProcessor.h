@@ -84,6 +84,10 @@ public:
     void setMidONOFF(int value) {pMidONOFF = value;}
     void setHighONOFF(int value) {pHighONOFF = value;}
     
+    void setLowCutoff(float value) {pLowPassCutoff = value;}
+    void setHighCutoff(float value) {pHighPassCutoff = value;}
+    
+    
     //==============================================================================
     // get methods for each parameter
 
@@ -111,6 +115,9 @@ public:
     int getLowONOFF(){ return pLowONOFF; }
     int getMidONOFF(){ return pMidONOFF; }
     int getHighONOFF(){ return pHighONOFF; }
+    
+    float getLowCutoff(){ return pLowPassCutoff;}
+    float getHighCutoff(){ return pHighPassCutoff;}
 
     
 private:
@@ -134,10 +141,8 @@ private:
             pHighGain, pHighThreshold, pHighRatio, pHighAttack, pHighRelease,
             pOverallGain, pKneeWidth;
     int pLowONOFF, pMidONOFF, pHighONOFF;
-    
-    // cutoff values
-    float loPassCutoff = 500;
-    float hiPassCutoff = 2000;
+    float pLowPassCutoff;
+    float pHighPassCutoff;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Multiband_compressorAudioProcessor)

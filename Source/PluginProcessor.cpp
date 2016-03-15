@@ -29,6 +29,9 @@ Multiband_compressorAudioProcessor::Multiband_compressorAudioProcessor()
     pOverallGain = 1.0;
     pKneeWidth = 0.0;
     
+    pLowPassCutoff = 500;
+    pHighPassCutoff = 2000;
+    
     // instantiate compresors
     lowComp = new Compressor;
     midComp = new Compressor;
@@ -109,19 +112,19 @@ void Multiband_compressorAudioProcessor::prepareToPlay (double sampleRate, int s
     // for each channel add low and high filters, set coefficients and reset
     for (int i = 0; i < numChannels; i++) {
         lowpassFilters.add(new LinkwitzRiley4thOrder);
-        lowpassFilters[i]->setCoefficients(filterTypeLowPass, loPassCutoff, sampleRate);
+        lowpassFilters[i]->setCoefficients(filterTypeLowPass, pLowPassCutoff, sampleRate);
         lowpassFilters[i]->reset();
         
         bandpassAFilters.add(new LinkwitzRiley4thOrder);
-        bandpassAFilters[i]->setCoefficients(filterTypeHighPass, loPassCutoff, sampleRate);
+        bandpassAFilters[i]->setCoefficients(filterTypeHighPass, pLowPassCutoff, sampleRate);
         bandpassAFilters[i]->reset();
         
         bandpassBFilters.add(new LinkwitzRiley4thOrder);
-        bandpassBFilters[i]->setCoefficients(filterTypeLowPass, hiPassCutoff, sampleRate);
+        bandpassBFilters[i]->setCoefficients(filterTypeLowPass, pHighPassCutoff, sampleRate);
         bandpassBFilters[i]->reset();
         
         highpassFilters.add(new LinkwitzRiley4thOrder);
-        highpassFilters[i]->setCoefficients(filterTypeHighPass, hiPassCutoff, sampleRate);
+        highpassFilters[i]->setCoefficients(filterTypeHighPass, pHighPassCutoff, sampleRate);
         highpassFilters[i]->reset();
     }
     
@@ -158,8 +161,18 @@ void Multiband_compressorAudioProcessor::processBlock (AudioSampleBuffer& buffer
     midOutput.makeCopyOf(buffer);
     highOutput.makeCopyOf(buffer);
     
+    float sampleRate = getSampleRate();
+    
     for (int channel = 0; channel < numInputChannels; channel++) {
-   
+        
+        // set parameters for filters
+
+        lowpassFilters[channel]->setCoefficients(filterTypeLowPass, pLowPassCutoff, sampleRate);
+        bandpassAFilters[channel]->setCoefficients(filterTypeHighPass, pLowPassCutoff, sampleRate);
+        bandpassBFilters[channel]->setCoefficients(filterTypeLowPass, pHighPassCutoff, sampleRate);
+        highpassFilters[channel]->setCoefficients(filterTypeHighPass, pHighPassCutoff, sampleRate);
+
+        
         // apply filters
         lowpassFilters[channel]->processSamples(lowOutput.getWritePointer(channel), numSamples);
         
@@ -190,7 +203,6 @@ void Multiband_compressorAudioProcessor::processBlock (AudioSampleBuffer& buffer
     
     // apply overall gain
     buffer.applyGain(pOverallGain);
-    
     
 }
 
