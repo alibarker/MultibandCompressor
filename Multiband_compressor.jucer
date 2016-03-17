@@ -19,13 +19,13 @@
             file="Source/LinkwitzRiley4thOrder.cpp"/>
       <FILE id="uG7HY2" name="LinkwitzRiley4thOrder.h" compile="0" resource="0"
             file="Source/LinkwitzRiley4thOrder.h"/>
+      <FILE id="hzOz27" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="DiFugS" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="NHrMMv" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="k2Bzxr" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="gLYEsa" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="m4kDDT" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

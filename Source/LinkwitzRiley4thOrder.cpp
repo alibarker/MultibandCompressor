@@ -77,7 +77,6 @@ void LinkwitzRiley4thOrder::processSamples(float *samples, int numSamples)
         {
             output += b[i] * x[ (writePointer - i + FILTER_ORDER) % FILTER_ORDER];
             output -= a[i] * y[ (writePointer - i + FILTER_ORDER) % FILTER_ORDER];
-            
         }
         
         // write inputs and outputs to buffers
